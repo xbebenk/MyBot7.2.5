@@ -25,6 +25,9 @@ Func WaitForClouds()
 	Local $maxSearchCount = 720 ; $maxSearchCount * 250ms ($DELAYGETRESOURCES1) = seconds wait time before reset in lower leagues: 720*250ms = 3 minutes
 	Local $maxLongSearchCount = 7 ; $maxLongSearchCount * $maxSearchCount = seconds total wait time in higher leagues: ; 21 minutes, set a value here but is never used unless error
 
+	; samm0d
+	Local $iLostConnectionCount = 0
+
 	Switch Int($g_aiCurrentLoot[$eLootTrophy]) ; add randomization to SearchCounters (long cloud keep alive time) for higher leagues
 		Case 3700 To 4099 ; champion 1 league
 			$maxSearchCount = Random(480, 840, 1) ; random range 2-3.5 minutes
@@ -66,7 +69,7 @@ Func WaitForClouds()
 				If $bigCount > $maxLongSearchCount Then ; check maximum wait time
 					$iSearchTime = __TimerDiff($hMinuteTimer) / 60000 ;get time since minute timer start in minutes
 					SetLog("Spent " & $iSearchTime & " minutes in Clouds searching, Restarting CoC and Bot...", $COLOR_ERROR)
-					$g_bIsClientSyncError = False ; disable fast OOS restart if not simple error and restarting CoC
+					;$g_bIsClientSyncError = False ; disable fast OOS restart if not simple error and restarting CoC
 					$g_bRestart = True
 					CloseCoC(True)
 					Return
@@ -86,6 +89,13 @@ Func WaitForClouds()
 		If $iSearchTime >= $iLastTime + 1 Then
 			Setlog("Cloud wait time " & StringFormat("%.1f", $iSearchTime) & " minute(s)", $COLOR_INFO)
 			$iLastTime += 1
+			; samm0d - everything reset cause of PB
+			If chkAttackSearchPersonalBreak() = True Then
+				checkMainScreen()
+				checkObstacles_ResetSearch()
+				CloseCoC(True)
+				Return
+			EndIf
 			; once a minute safety checks for search fail/retry msg and Personal Break events and early detection if CoC app has crashed inside emulator (Bluestacks issue mainly)
 			If chkAttackSearchFail() = 2 Or chkAttackSearchPersonalBreak() = True Or GetAndroidProcessPID() = 0 Then
 				resetAttackSearch()
@@ -101,6 +111,24 @@ Func WaitForClouds()
 		EndIf
 
 		ForceCaptureRegion() ; ensure screenshots are not cached
+
+		;=================samm0d - launch attack button and chat button found, back to main?
+		If _ColorCheck(_GetPixelColor($aButtonOpenLaunchAttack[4], $aButtonOpenLaunchAttack[5],$g_bNoCapturePixel), Hex($aButtonOpenLaunchAttack[6], 6),$aButtonOpenLaunchAttack[7]) And _
+		_ColorCheck(_GetPixelColor($aButtonClanWindowOpen[4], $aButtonClanWindowOpen[5],$g_bNoCapturePixel), Hex($aButtonClanWindowOpen[6], 6),$aButtonClanWindowOpen[7]) Then
+			If $bEnabledGUI = True Then
+				SetLog("Disable bot controls after long wait time", $COLOR_SUCCESS)
+				AndroidShieldForceDown(False)
+				DisableGuiControls()
+				SaveConfig()
+				readConfig()
+				applyConfig()
+			EndIf
+			SetLog("Something happened that cause back to main screen when searching village for attack.",$COLOR_ERROR)
+			$g_bIsClientSyncError = True
+			$g_bRestart = True
+			Return
+		EndIf
+		;========================
 	WEnd
 
 	If $bEnabledGUI = True Then

@@ -21,3 +21,4 @@ Func ReadTroopQuantity($Troop)
 	EndIf
 	Return Number($iAmount)
 EndFunc   ;==>ReadTroopQuantity
+

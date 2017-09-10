@@ -108,11 +108,11 @@ Func getProfile($x_start, $y_start) ;  -> Gets Attack Win/Defense Win/Donated/Re
 EndFunc   ;==>getProfile
 
 Func getTroopCountSmall($x_start, $y_start) ;  -> Gets troop amount on Attack Screen for non-selected troop kind
-	Return getOcrAndCapture("coc-t-s", $x_start, $y_start, 53, 15, True)
+	Return getOcrAndCapture("coc-t-s", $x_start, $y_start, 50, 15, True)
 EndFunc   ;==>getTroopCountSmall
 
 Func getTroopCountBig($x_start, $y_start) ;  -> Gets troop amount on Attack Screen for selected troop kind
-	Return getOcrAndCapture("coc-t-b", $x_start, $y_start, 53, 16, True)
+	Return getOcrAndCapture("coc-t-b", $x_start, $y_start, 50, 16, True)
 EndFunc   ;==>getTroopCountBig
 
 Func getTroopsSpellsLevel($x_start, $y_start) ;  -> Gets spell level on Attack Screen for selected spell kind (could be used for troops too)
@@ -344,9 +344,14 @@ Func getOcrAndCapture($language, $x_start, $y_start, $width, $height, $removeSpa
 	Static $_hHBitmap = 0
 	If $bForceCaptureRegion = True Then
 		_CaptureRegion2($x_start, $y_start, $x_start + $width, $y_start + $height)
+		; samm0d
+		If $g_iSamM0dDebugOCR = 1 Then _debugSaveHBitmapToImage($g_hHBitmap2, $language, True, True)
 	Else
 		$_hHBitmap = GetHHBitmapArea($g_hHBitmap2, $x_start, $y_start, $x_start + $width, $y_start + $height)
+		; samm0d
+		If $g_iSamM0dDebugOCR = 1 Then _debugSaveHBitmapToImage($_hHBitmap, $language, True, True)
 	EndIf
+
 	Local $result
 	If $bImgLoc Then
 		If $_hHBitmap <> 0 Then

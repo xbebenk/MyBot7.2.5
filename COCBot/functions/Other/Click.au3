@@ -17,12 +17,30 @@
 #include <WinAPISys.au3>
 
 Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
-	If $g_iDebugClick = 1 Or TestCapture() Then
-		Local $txt = _DecodeDebug($debugtxt)
-		SetLog("Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
+	If $ichkEnableHLFClick = 1 Then
+		Local $txt =""
+		Local $PrevCoor = $x & "," & $y
+		Local $iResult = CheckClickMsg($x,$y,$times,$speed,$debugtxt)
+		If $iResult = 2 Then Return
+		If $iResult Then
+			If $EnableHMLSetLog = 1 Then
+				$txt = _DecodeDebug($debugtxt)
+				SetLog("Random Click =-= Change " & $PrevCoor & " To " & $x & "," & $y & " " & $debugtxt & $txt, $COLOR_HMLClick_LOG)
+			EndIf
+		Else
+			If $g_iDebugClick = 1 Then
+				$txt = _DecodeDebug($debugtxt)
+				SetLog("Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
+			EndIf
+		EndIf
+		If TestCapture() Then Return
+	Else
+		If $g_iDebugClick = 1 Or TestCapture() Then
+			Local $txt = _DecodeDebug($debugtxt)
+			SetLog("Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
+		EndIf
 	EndIf
 
-	If TestCapture() Then Return
 
 	If $g_bAndroidAdbClick = True Then
 		AndroidClick($x, $y, $times, $speed)
@@ -68,17 +86,14 @@ Func _ControlClick($x, $y)
 		$y += $g_aiBSrpos[1]
 	EndIf
 	If $g_iAndroidControlClickMode = 0 Then
-		Opt("MouseClickDelay", $g_iAndroidControlClickDelay) ;Default: 10 milliseconds
-		Opt("MouseClickDownDelay", $g_iAndroidControlClickDownDelay) ;Default: 10 milliseconds
 		Return ControlClick($hWin, "", "", "left", "1", $x, $y)
 	EndIf
 	Local $WM_LBUTTONDOWN = 0x0201, $WM_LBUTTONUP = 0x0202
 	Local $lParam = BitOR(Int($y) * 0x10000, BitAND(Int($x), 0xFFFF)) ; HiWord = y-coordinate, LoWord = x-coordinate
 	; _WinAPI_PostMessage or _SendMessage
 	_SendMessage($hWin, $WM_LBUTTONDOWN, 0x0001, $lParam)
-	_SleepMicro($g_iAndroidControlClickDownDelay * 1000)
 	_SendMessage($hWin, $WM_LBUTTONUP, 0x0000, $lParam)
-	_SleepMicro($g_iAndroidControlClickDelay * 1000) ; sleep 25 Milliseconds
+	_SleepMicro(25000) ; sleep 25 Milliseconds
 	Return 1
 EndFunc   ;==>_ControlClick
 
@@ -109,9 +124,27 @@ Func BuildingClickP($point, $debugtxt = "")
 EndFunc   ;==>BuildingClickP
 
 Func PureClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
-	If $g_iDebugClick = 1 Then
-		Local $txt = _DecodeDebug($debugtxt)
-		SetLog("PureClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
+	If $ichkEnableHLFClick = 1 Then
+		Local $txt = ""
+		Local $PrevCoor = $x & "," & $y
+		Local $iResult = CheckClickMsg($x,$y,$times,$speed,$debugtxt)
+		If $iResult = 2 Then Return
+		If $iResult Then
+			If $EnableHMLSetLog = 1 Then
+				$txt = _DecodeDebug($debugtxt)
+				SetLog("Random Click =-= Change " & $PrevCoor & " To " & $x & "," & $y & " " & $debugtxt & $txt, $COLOR_HMLClick_LOG)
+			EndIf
+		Else
+			If $g_iDebugClick = 1 Then
+				$txt = _DecodeDebug($debugtxt)
+				SetLog("Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
+			EndIf
+		EndIf
+	Else
+		If $g_iDebugClick = 1 Then
+			Local $txt = _DecodeDebug($debugtxt)
+			SetLog("Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
+		EndIf
 	EndIf
 
 	If TestCapture() Then Return
@@ -143,9 +176,27 @@ Func PureClickP($point, $howMuch = 1, $speed = 0, $debugtxt = "")
 EndFunc   ;==>PureClickP
 
 Func GemClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
-	If $g_iDebugClick = 1 Then
-		Local $txt = _DecodeDebug($debugtxt)
-		SetLog("GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
+	If $ichkEnableHLFClick = 1 Then
+		Local $txt = ""
+		Local $PrevCoor = $x & "," & $y
+		Local $iResult = CheckClickMsg($x,$y,$times,$speed,$debugtxt)
+		If $iResult = 2 Then Return
+		If $iResult Then
+			If $EnableHMLSetLog = 1 Then
+				$txt = _DecodeDebug($debugtxt)
+				SetLog("Random Click =-= Change " & $PrevCoor & " To " & $x & "," & $y & " " & $debugtxt & $txt, $COLOR_HMLClick_LOG)
+			EndIf
+		Else
+			If $g_iDebugClick = 1 Then
+				$txt = _DecodeDebug($debugtxt)
+				SetLog("Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
+			EndIf
+		EndIf
+	Else
+		If $g_iDebugClick = 1 Then
+			Local $txt = _DecodeDebug($debugtxt)
+			SetLog("Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_ACTION, "Verdana", "7.5", 0)
+		EndIf
 	EndIf
 
 	If TestCapture() Then Return

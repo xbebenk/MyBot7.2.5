@@ -21,7 +21,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 	$iCount = 0
 	For $i = 0 To 105 ;105*2000 = 3.5 Minutes
 		If Not $g_bRunState Then Return
-		If $g_iDebugSetlog = 1 Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
+		If $g_iDebugSetlog = 1 Then Setlog("waitMainScreen Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
 		$iCount += 1
 		Local $hWin = $g_hAndroidWindow
 		If TestCapture() = False Then
@@ -36,11 +36,11 @@ Func waitMainScreen() ;Waits for main screen to popup
 			getBSPos() ; Update $g_hAndroidWindow and Android Window Positions
 		EndIf
 		_CaptureRegion()
-		If _CheckPixel($aIsMain, $g_bNoCapturePixel) Then ;Checks for Main Screen
+		If _CheckPixel($aIsMain, $g_bNoCapturePixel) = True Or _CheckPixel($aIsOnBuilderIsland, $g_bNoCapturePixel) = True  Then ;Checks for Main Screen
 			If $g_iDebugSetlog = 1 Then Setlog("Screen cleared, WaitMainScreen exit", $COLOR_DEBUG)
 			Return
 		Else
-			If Not TestCapture() And _Sleep($DELAYWAITMAINSCREEN1) Then Return
+			If TestCapture() = False And _Sleep($DELAYWAITMAINSCREEN1) Then Return
 			If checkObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
 		EndIf
 		If Mod($i, 5) = 0 Then ;every 10 seconds
@@ -56,7 +56,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	CloseCoC(True) ; Close then Open CoC
-	If _CheckPixel($aIsMain, True) Then Return ; If its main screen return
+	If _CheckPixel($aIsMain, True) Or _CheckPixel($aIsOnBuilderIsland, True) Then Return ; If its main screen return
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	; If mainscreen is not found, then fix it
@@ -72,7 +72,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 			SetError(1, 1, -1)
 			Return
 		EndIf
-		If _CheckPixel($aIsMain, $g_bCapturePixel) = True Then ExitLoop
+		If _CheckPixel($aIsMain, $g_bCapturePixel) = True Or _CheckPixel($aIsOnBuilderIsland, $g_bCapturePixel) Then ExitLoop
 		CheckObstacles() ; Check for random error windows and close them
 		$iCount += 1
 		If $iCount > 2 Then ; If we can't restart BS after 2 tries, exit the loop
@@ -80,7 +80,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 			SetError(1, 0, 0)
 			Return
 		EndIf
-		If _CheckPixel($aIsMain, $g_bCapturePixel) = True Then ExitLoop
+		If _CheckPixel($aIsMain, $g_bCapturePixel) = True Or _CheckPixel($aIsOnBuilderIsland, $g_bCapturePixel) Then ExitLoop
 	WEnd
 
 EndFunc   ;==>waitMainScreen
@@ -98,12 +98,12 @@ Func waitMainScreenMini()
 		If $g_iDebugSetlog = 1 Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_DEBUG) ; Debug stuck loop
 		$iCount += 1
 		_CaptureRegion()
-		If _CheckPixel($aIsMain, $g_bNoCapturePixel) = False Then ;Checks for Main Screen
-			If TestCapture() = False And _Sleep(1000) Then Return
-			If CheckObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
-		Else
+		If _CheckPixel($aIsMain, $g_bNoCapturePixel) Or _CheckPixel($aIsOnBuilderIsland, $g_bNoCapturePixel) Then ;Checks for Main Screen
 			SetLog("CoC main window took " & Round(__TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_SUCCESS)
 			Return
+		Else
+			If TestCapture() = False And _Sleep(1000) Then Return
+			If CheckObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
 		EndIf
 		_StatusUpdateTime($hTimer, "Main Screen")
 		If ($i > 60) Or ($iCount > 80) Then ExitLoop ; If CheckObstacles forces reset, limit total time to 6 minute before Force restart BS

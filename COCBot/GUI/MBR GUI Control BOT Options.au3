@@ -266,26 +266,45 @@ Func chkmakeIMGCSV()
 EndFunc   ;==>chkmakeIMGCSV
 
 Func btnTestTrain()
-	Local $currentOCR = $g_iDebugOcr
 	Local $currentRunState = $g_bRunState
 	$g_bRunState = True
-	BeginImageTest()
 
-	Local $result
-	SetLog("Testing checkArmyCamp()", $COLOR_INFO)
-	$result = checkArmyCamp()
-	If @error Then $result = "Error " & @error & ", " & @extended & ", " & ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
-	SetLog("Result checkArmyCamp() = " & $result, $COLOR_INFO)
+	_GUICtrlTab_ClickTab($g_hTabMain, 0)
+	SetLog("===START===")
+	Local $hTimer = __TimerInit()
 
-	SetLog("Testing getArmyHeroTime()", $COLOR_INFO)
-	$result = getArmyHeroTime("all")
-	If @error Then $result = "Error " & @error & ", " & @extended & ", " & ((IsArray($result)) ? (_ArrayToString($result, ",")) : ($result))
-	SetLog("Result getArmyHeroTime() = " & $result, $COLOR_INFO)
-	SetLog("Testing Train DONE", $COLOR_INFO)
+;~ 	SetLog("Check troops 1")
+;~ 	PrepareAttack($LB)
+;~ 	SelectDropTroop(1)
 
-	EndImageTest()
+;~ 	ClickDrag(Random(770,780,1),Random(680,690,1),Random(35,45,1),Random(680,690,1),50)
+;~ 	If _sleep(250) Then Return False
+;~ 	;If _sleep(3000) Then Return False
 
-	$g_iDebugOcr = $currentOCR
+;~ 	SetLog("Check troops 2")
+;~ 	PrepareAttack($LB, True, True)
+;~ 	SelectDropTroop(2)
+
+;~ 	ClickDrag(Random(35,45,1),Random(680,690,1),Random(770,780,1),Random(680,690,1),50)
+;~ 	If _sleep(250) Then Return False
+
+;~ 	SetLog("Check troops 3")
+;~ 	PrepareAttack($LB, True)
+;~ 	SelectDropTroop(3)
+
+;~ 	PrepareAttack($LB, True)
+;~ 	SelectDropTroop(4)
+
+	$g_bRestart = False
+	$tempDisableTrain=False
+	$tempDisableBrewSpell=False
+    ModTrain()
+
+;~ 	Laboratory()
+
+	SetLog("Elapsed: " & Round(__TimerDiff($hTimer) / 1000, 2))
+	SetLog("===END===")
+
 	$g_bRunState = $currentRunState
 EndFunc   ;==>btnTestTrain
 
@@ -577,7 +596,7 @@ Func btnTestAttackCSV()
 	$g_iDebugSetlog = 1
 	$g_iDebugBuildingPos = 1
 
-	$g_iMatchMode = $DB ; define which script to use
+	$g_iMatchMode = $LB ; define which script to use
 
 	SearchZoomOut($aCenterEnemyVillageClickDrag, True, "btnTestAttackCSV")
 	ResetTHsearch()
