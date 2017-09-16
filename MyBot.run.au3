@@ -1,6 +1,8 @@
-﻿#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
+﻿#RequireAdmin
+#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_UseUpx=y
+#AutoIt3Wrapper_Run_AU3Check=n
 #Au3Stripper_Parameters=/rsln /MI=3
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ; #FUNCTION# ====================================================================================================================
@@ -16,11 +18,7 @@
 ; ===============================================================================================================================
 
 ; AutoIt pragmas
-#RequireAdmin
-#AutoIt3Wrapper_UseX64=7n
 ;#AutoIt3Wrapper_Res_HiDpi=Y ; HiDpi will be set during run-time!
-#AutoIt3Wrapper_Run_Au3Stripper=y
-#Au3Stripper_Parameters=/rsln /MI=3
 ;/SV=0
 
 ;#AutoIt3Wrapper_Change2CUI=y
