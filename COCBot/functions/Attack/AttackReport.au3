@@ -199,6 +199,7 @@ Func AttackReport()
 	Else
 		$AtkLogTxt = "" & _NowTime(4) & "|"
 	EndIf
+
 	;$AtkLogTxt = "" & _NowTime(4) & "|"
 	$AtkLogTxt &= StringFormat("%4d", $g_aiCurrentLoot[$eLootTrophy]) & "|"
 	$AtkLogTxt &= StringFormat("%3d", $g_iSearchCount) & "|"

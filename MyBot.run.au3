@@ -2,7 +2,6 @@
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_UseUpx=y
-#AutoIt3Wrapper_Run_AU3Check=n
 #Au3Stripper_Parameters=/rsln /MI=3
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ; #FUNCTION# ====================================================================================================================
@@ -564,7 +563,7 @@ Func FinalInitialization(Const $sAI)
 
 	; destroy splash screen here (so we witness the 100% ;)
 	DestroySplashScreen()
-
+	_BatteryStatus()
 	;AdlibRegister("PushBulletRemoteControl", $g_iPBRemoteControlInterval)
 	;AdlibRegister("PushBulletDeleteOldPushes", $g_iPBDeleteOldPushesInterval)
 
@@ -678,6 +677,8 @@ Func runBot() ;Bot that runs everything in order
 				If _SleepStatus(15000) = True Then Return
 			WEnd
 		EndIf
+		;xbenk
+		_BatteryStatus()
 
 		;Restart bot after these seconds
 		If $b_iAutoRestartDelay > 0 And __TimerDiff($g_hBotLaunchTime) > $b_iAutoRestartDelay * 1000 Then
@@ -891,6 +892,8 @@ Func Idle() ;Sequence that runs until Full Army
 	Local $TimeIdle = 0 ;In Seconds
 	If $g_iDebugSetlog = 1 Then SetLog("Func Idle ", $COLOR_DEBUG)
 
+	;xbenk
+	_BatteryStatus()
 
 	; samm0d - check make donate type account enter idle loop
 	If $ichkEnableMySwitch Then
@@ -1105,6 +1108,9 @@ Func AttackMain() ;Main control for attack functions
 	;LoadAmountOfResourcesImages() ; for debug
 	; samm0d
 	;getArmyCapacity(True, True)
+
+	;xbenk
+	_BatteryStatus()
 
 	If IsSearchAttackEnabled() Then
 		If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then

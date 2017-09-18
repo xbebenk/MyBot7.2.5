@@ -573,7 +573,7 @@ Global $eLootPerc = 0
 Global $starsearned = 0
 Global $eTHLevel = "-"
 Global $eWinlose = "-"
-
+Global $g_bStopOnBatt = 0, $g_iStopOnBatt = 10
 
 ; Attack types
 Global Enum $DB, $LB, $TS, $MA, $TB, $DT ; DeadBase, ActiveBase, TownhallSnipe, Milking Attack, TownhallBully, DropTrophy
