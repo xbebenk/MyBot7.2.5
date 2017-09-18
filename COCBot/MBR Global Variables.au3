@@ -572,6 +572,7 @@ Global $btnAttNowLB
 Global $eLootPerc = 0
 Global $starsearned = 0
 Global $eTHLevel = "-"
+Global $eWinlose = "-"
 
 
 ; Attack types

@@ -72,7 +72,7 @@ InitializeBot()
 MainLoop()
 
 Func UpdateBotTitle()
-	Local $sTitle = "My Bot " & $g_sBotVersion & " @Samkie M0d v1.0.8 "
+	Local $sTitle = "MyBot " & $g_sBotVersion & " @Samkie v1.0.8 - @xbebenk "
 	If $g_sBotTitle = "" Then
 		$g_sBotTitle = $sTitle
 	Else

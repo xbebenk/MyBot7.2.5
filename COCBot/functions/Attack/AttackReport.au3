@@ -180,39 +180,53 @@ Func AttackReport()
 	EndIf
 
 	; check stars earned
-	Local $starsearned = 0
+	$starsearned = 0
 	If _ColorCheck(_GetPixelColor($aWonOneStarAtkRprt[0], $aWonOneStarAtkRprt[1], True), Hex($aWonOneStarAtkRprt[2], 6), $aWonOneStarAtkRprt[3]) Then $starsearned += 1
 	If _ColorCheck(_GetPixelColor($aWonTwoStarAtkRprt[0], $aWonTwoStarAtkRprt[1], True), Hex($aWonTwoStarAtkRprt[2], 6), $aWonTwoStarAtkRprt[3]) Then $starsearned += 1
 	If _ColorCheck(_GetPixelColor($aWonThreeStarAtkRprt[0], $aWonThreeStarAtkRprt[1], True), Hex($aWonThreeStarAtkRprt[2], 6), $aWonThreeStarAtkRprt[3]) Then $starsearned += 1
 	SetLog("Stars earned: " & $starsearned)
 
-	Local $AtkLogTxt
-	$AtkLogTxt = "" & _NowTime(4) & "|"
-	$AtkLogTxt &= StringFormat("%5d", $g_aiCurrentLoot[$eLootTrophy]) & "|"
-	$AtkLogTxt &= StringFormat("%6d", $g_iSearchCount) & "|"
-	$AtkLogTxt &= StringFormat("%7d", $g_iStatsLastAttack[$eLootGold]) & "|"
-	$AtkLogTxt &= StringFormat("%7d", $g_iStatsLastAttack[$eLootElixir]) & "|"
-
-	If $numLSpellDrop > 0 Then ;samm0d
-		$AtkLogTxt &=  "z" & $numLSpellDrop & StringFormat("%5d",$g_iStatsLastAttack[$eLootDarkElixir]) & "|"
-		$numLSpellDrop = 0
+	If $starsearned >= 1 Then
+		$eWinlose = "VICTORY"
 	Else
-		$AtkLogTxt &= StringFormat("%7d", $g_iStatsLastAttack[$eLootDarkElixir]) & "|"
+		$eWinlose = "DEFEAT"
 	EndIf
-	;$AtkLogTxt &= StringFormat("%7d", $g_iStatsLastAttack[$eLootDarkElixir]) & "|"
+	SetLog("RESULT: " & $eWinlose)
 
+	Local $AtkLogTxt
+	If $ichkEnableMySwitch Then
+		$AtkLogTxt = "#" & $iCurActiveAcc + 1 & "|" & _NowTime(4) & "|"
+	Else
+		$AtkLogTxt = "" & _NowTime(4) & "|"
+	EndIf
+	;$AtkLogTxt = "" & _NowTime(4) & "|"
+	$AtkLogTxt &= StringFormat("%4d", $g_aiCurrentLoot[$eLootTrophy]) & "|"
+	$AtkLogTxt &= StringFormat("%3d", $g_iSearchCount) & "|"
+	$AtkLogTxt &= StringFormat("%2d", $eTHLevel) & "|"
+	$AtkLogTxt &= StringFormat("%2d", $g_iSearchTrophy) & "|"
+	If ($eLootPerc = 100) Then
+		$AtkLogTxt &= StringFormat("%3d", $eLootPerc) & "|"
+	Else
+		$AtkLogTxt &= StringFormat("%2d", $eLootPerc) & "%|"
+	EndIf
 	$AtkLogTxt &= StringFormat("%3d", $g_iStatsLastAttack[$eLootTrophy]) & "|"
 	$AtkLogTxt &= StringFormat("%1d", $starsearned) & "|"
-	$AtkLogTxt &= StringFormat("%6d", $g_iStatsBonusLast[$eLootGold]) & "|"
-	$AtkLogTxt &= StringFormat("%6d", $g_iStatsBonusLast[$eLootElixir]) & "|"
+	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsLastAttack[$eLootGold]/1000)) & "K|"
+	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsLastAttack[$eLootElixir]/1000)) & "K|"
+	$AtkLogTxt &= StringFormat("%4d", $g_iStatsLastAttack[$eLootDarkElixir]) & "|"
+
+	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsBonusLast[$eLootGold]/1000)) & "K|"
+	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsBonusLast[$eLootElixir]/1000)) & "K|"
 	$AtkLogTxt &= StringFormat("%4d", $g_iStatsBonusLast[$eLootDarkElixir]) & "|"
 	$AtkLogTxt &= $g_asLeagueDetailsShort & "|"
 
 	If $ichkEnableMySwitch Then
 		If $iCurActiveAcc <> - 1 Then
-			$AtkLogTxt &= " atk by " & $icmbWithProfile[$iCurActiveAcc]
+			$AtkLogTxt &= $g_sProfileCurrentName
 		EndIf
 	EndIf
+	;xbenk till here
+
 	Local $AtkLogTxtExtend
 	$AtkLogTxtExtend = "|"
 	$AtkLogTxtExtend &= $g_CurrentCampUtilization & "/" & $g_iTotalCampSpace & "|"
